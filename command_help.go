@@ -1,0 +1,15 @@
+package main
+
+import "fmt"
+
+func commandHelp(c *config) error {
+	fmt.Println()
+	fmt.Println("Welcome to the Pokedex!")
+	fmt.Println("Usage:")
+	fmt.Println()
+	for cmd := range c.commands {
+		fmt.Printf("%s: %s\n", c.commands[cmd].name, c.commands[cmd].description)
+	}
+	fmt.Println()
+	return nil
+}
