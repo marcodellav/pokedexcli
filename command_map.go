@@ -1,53 +1,40 @@
 package main
 
 import (
-	"encoding/json"
+	"errors"
 	"fmt"
-	"io"
-	"log"
-	"net/http"
 )
 
-func commandMap(c *config) error {
-
-	type LocationAreas struct {
-		Count    int     `json:"count"`
-		Next     *string `json:"next"`
-		Previous *string `json:"previous"`
-		Results  []struct {
-			Name string `json:"name"`
-			URL  string `json:"url"`
-		} `json:"results"`
-	}
-
-	url := c.URL
-	res, err := http.Get(*url)
+func commandMap(cfg *config, args ...string) error {
+	locationsResp, err := cfg.pokeapiClient.ListLocations(cfg.Next)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
-	body, err := io.ReadAll(res.Body)
-	res.Body.Close()
-	if res.StatusCode > 299 {
-		log.Fatalf("Response failed with status code: %d and\nbody: %s\n", res.StatusCode, body)
+
+	cfg.Next = locationsResp.Next
+	cfg.Previous = locationsResp.Previous
+
+	for _, loc := range locationsResp.Results {
+		fmt.Println(loc.Name)
 	}
+	return nil
+}
+
+func commandMapb(cfg *config, args ...string) error {
+	if cfg.Previous == nil {
+		return errors.New("you're on the first page")
+	}
+
+	locationResp, err := cfg.pokeapiClient.ListLocations(cfg.Previous)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
-	locAreas := LocationAreas{}
-	err = json.Unmarshal(body, &locAreas)
-	c.URL = locAreas.Next
-	c.Previous = locAreas.Previous
+	cfg.Next = locationResp.Next
+	cfg.Previous = locationResp.Previous
 
-	if err != nil {
-		fmt.Println(err)
+	for _, loc := range locationResp.Results {
+		fmt.Println(loc.Name)
 	}
-	for i := range locAreas.Results {
-		fmt.Println(locAreas.Results[i].Name)
-	}
-
-	// fmt.Println("url:", url)
-
-	return err
-
+	return nil
 }
