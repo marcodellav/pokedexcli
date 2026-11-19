@@ -51,16 +51,16 @@ func (c *Client) ListLocations(pageURL *string) (RespShallowLocations, error) {
 	return locationsResp, nil
 }
 
-func (c *Client) ListPokemons(id string) (RespShallowPokemons, error) {
+func (c *Client) ListPokemons(id string) (Pokemon, error) {
 	url := baseURL + "/" + "location-area/" + id
 
 	cachedUrl, ok := c.cache.Get(url)
 	if ok {
 		// fmt.Println("************** cache hit for", url)
-		pokemonsResp := RespShallowPokemons{}
+		pokemonsResp := Pokemon{}
 		err := json.Unmarshal(cachedUrl, &pokemonsResp)
 		if err != nil {
-			return RespShallowPokemons{}, err
+			return Pokemon{}, err
 		}
 		return pokemonsResp, nil
 
@@ -68,31 +68,31 @@ func (c *Client) ListPokemons(id string) (RespShallowPokemons, error) {
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return RespShallowPokemons{}, err
+		return Pokemon{}, err
 	}
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return RespShallowPokemons{}, err
+		return Pokemon{}, err
 	}
 	// fmt.Println("url:", url)
 	defer resp.Body.Close()
 
 	dat, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return RespShallowPokemons{}, err
+		return Pokemon{}, err
 	}
 	c.cache.Add(url, dat)
 
-	pokemonsResp := RespShallowPokemons{}
+	pokemonsResp := Pokemon{}
 	err = json.Unmarshal(dat, &pokemonsResp)
 	if err != nil {
-		return RespShallowPokemons{}, err
+		return Pokemon{}, err
 	}
 
 	return pokemonsResp, nil
 }
 
-func (c *Client) GetPokemonInfo(name string) (RespShallowPokemonsInfo, error) {
+func (c *Client) GetPokemonInfo(name string) (PokemonInfo, error) {
 
 	// https://pokeapi.co/api/v2/pokemon/{id or name}/
 	url := baseURL + "/" + "pokemon/" + name
@@ -100,10 +100,10 @@ func (c *Client) GetPokemonInfo(name string) (RespShallowPokemonsInfo, error) {
 	cachedUrl, ok := c.cache.Get(url)
 	if ok {
 		// fmt.Println("************** cache hit for", url)
-		pokemonsInfoResp := RespShallowPokemonsInfo{}
+		pokemonsInfoResp := PokemonInfo{}
 		err := json.Unmarshal(cachedUrl, &pokemonsInfoResp)
 		if err != nil {
-			return RespShallowPokemonsInfo{}, err
+			return PokemonInfo{}, err
 		}
 		return pokemonsInfoResp, nil
 
@@ -111,25 +111,25 @@ func (c *Client) GetPokemonInfo(name string) (RespShallowPokemonsInfo, error) {
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return RespShallowPokemonsInfo{}, err
+		return PokemonInfo{}, err
 	}
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return RespShallowPokemonsInfo{}, err
+		return PokemonInfo{}, err
 	}
 	// fmt.Println("url:", url)
 	defer resp.Body.Close()
 
 	dat, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return RespShallowPokemonsInfo{}, err
+		return PokemonInfo{}, err
 	}
 	c.cache.Add(url, dat)
 
-	pokemonsInfoResp := RespShallowPokemonsInfo{}
+	pokemonsInfoResp := PokemonInfo{}
 	err = json.Unmarshal(dat, &pokemonsInfoResp)
 	if err != nil {
-		return RespShallowPokemonsInfo{}, err
+		return PokemonInfo{}, err
 	}
 
 	return pokemonsInfoResp, nil

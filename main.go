@@ -14,6 +14,7 @@ func main() {
 		Next:          nil,
 		Previous:      nil,
 		pokeapiClient: pokeapi.NewClient(5 * time.Second),
+		caughtPokemon: map[string]pokeapi.PokemonInfo{},
 	}
 	startRepl(c)
 }

@@ -11,7 +11,7 @@ type RespShallowLocations struct {
 	} `json:"results"`
 }
 
-type RespShallowPokemons struct {
+type Pokemon struct {
 	ID                   int    `json:"id"`
 	Name                 string `json:"name"`
 	GameIndex            int    `json:"game_index"`
@@ -64,7 +64,7 @@ type RespShallowPokemons struct {
 	} `json:"pokemon_encounters"`
 }
 
-type RespShallowPokemonsInfo struct {
+type PokemonInfo struct {
 	ID             int    `json:"id"`
 	Name           string `json:"name"`
 	BaseExperience int    `json:"base_experience"`

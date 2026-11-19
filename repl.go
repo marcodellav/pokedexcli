@@ -51,13 +51,13 @@ type config struct {
 	Next          *string
 	Previous      *string
 	pokeapiClient pokeapi.Client
+	caughtPokemon map[string]pokeapi.PokemonInfo
 }
 
 type cliCommand struct {
 	name        string
 	description string
 	callback    func(*config, ...string) error
-	args        string
 }
 
 func getCommands() map[string]cliCommand {
@@ -66,37 +66,41 @@ func getCommands() map[string]cliCommand {
 			name:        "help",
 			description: "Displays a help message",
 			callback:    commandHelp,
-			args:        "",
 		},
 		"exit": {
 			name:        "exit",
 			description: "Exit the Pokedex",
 			callback:    commandExit,
-			args:        "",
 		},
 		"map": {
 			name:        "map",
 			description: "Show 20 location areas",
 			callback:    commandMap,
-			args:        "",
 		},
 		"mapb": {
 			name:        "mapb",
 			description: "Show previous 20 location areas",
 			callback:    commandMapb,
-			args:        "",
 		},
 		"explore": {
 			name:        "explore",
 			description: "Show pokemon in this area",
 			callback:    commandExplore,
-			args:        "name or id",
 		},
 		"catch": {
 			name:        "catch",
 			description: "throw a Pokeball at a Pokemon",
 			callback:    commandCatch,
-			args:        "pokemon",
+		},
+		"inspect": {
+			name:        "inspect",
+			description: "show stats of captured Pokemons",
+			callback:    commandInspect,
+		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "show list of captured Pokemons",
+			callback:    commandPokedex,
 		},
 	}
 }
